@@ -66,91 +66,95 @@ const LogsList = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 gap-8 p-6 bg-gray-100">
+    <div className="grid grid-cols-1 gap-6 p-4 sm:p-6 md:p-8 bg-gray-100">
       
       {/* Table Section */}
-      <div className="bg-white shadow-lg rounded-lg p-6">
-        <h1 className="text-3xl font-bold text-center text-blue-600 mb-6">Trip Logs</h1>
+      <div className="bg-white shadow-md rounded-lg p-4 sm:p-6">
+        <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-center text-blue-600 mb-3 sm:mb-5">Trip Logs</h1>
 
         {message && (
-          <div className="mb-4 text-center text-lg font-semibold text-green-600">
+          <div className="mb-4 text-center text-xs sm:text-sm md:text-base font-semibold text-green-600">
             {message}
           </div>
         )}
 
         {logs.length > 0 ? (
-          <table className="w-full border-collapse bg-gray-50 rounded-lg shadow-md">
-            <thead>
-              <tr className="bg-blue-500 text-white text-sm">
-                <th className="border p-3">Day</th>
-                <th className="border p-3">Activity</th>
-                <th className="border p-3">Location</th>
-                <th className="border p-3">Start Time</th>
-                <th className="border p-3">End Time</th>
-                <th className="border p-3">Hours</th>
-              </tr>
-            </thead>
-            <tbody>
-              {logs.map((log) => (
-                <tr key={log.id} className="text-center text-sm bg-white hover:bg-gray-100">
-                  <td className="border p-3">{log.day}</td>
-                  <td className={`border p-3 font-semibold ${log.activity_type === 'Driving' ? 'text-blue-600' : 'text-green-600'}`}>
-                    {log.activity_type}
-                  </td>
-                  <td className="border p-3">{log.location || 'Unknown'}</td>
-                  <td className="border p-3">{new Date(log.start_time).toLocaleString()}</td>
-                  <td className="border p-3">{new Date(log.end_time).toLocaleString()}</td>
-                  <td className="border p-3">{log.hours}</td>
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse bg-gray-50 rounded-lg shadow-sm text-xs sm:text-sm md:text-base">
+              <thead>
+                <tr className="bg-blue-500 text-white">
+                  <th className="border p-2 sm:p-3">Day</th>
+                  <th className="border p-2 sm:p-3">Activity</th>
+                  <th className="border p-2 sm:p-3">Location</th>
+                  <th className="border p-2 sm:p-3">Start Time</th>
+                  <th className="border p-2 sm:p-3">End Time</th>
+                  <th className="border p-2 sm:p-3">Hours</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {logs.map((log) => (
+                  <tr key={log.id} className="text-center bg-white hover:bg-gray-100">
+                    <td className="border p-2 sm:p-3">{log.day}</td>
+                    <td className={`border p-2 sm:p-3 font-semibold ${log.activity_type === 'Driving' ? 'text-blue-600' : 'text-green-600'}`}>
+                      {log.activity_type}
+                    </td>
+                    <td className="border p-2 sm:p-3">{log.location || 'Unknown'}</td>
+                    <td className="border p-2 sm:p-3">{new Date(log.start_time).toLocaleString()}</td>
+                    <td className="border p-2 sm:p-3">{new Date(log.end_time).toLocaleString()}</td>
+                    <td className="border p-2 sm:p-3">{log.hours}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         ) : (
           <div className="text-center text-gray-700">No logs available.</div>
         )}
       </div>
 
       {/* Map Section */}
-      <div className="bg-white shadow-lg rounded-lg p-6">
-        <h2 className="text-2xl font-semibold text-center mb-2">Route Visualization</h2>
-        <MapContainer
-          center={routeCoordinates.length > 0 ? routeCoordinates[0] : [0, 0]}
-          zoom={6}
-          className="h-[600px] w-full rounded-lg shadow"
-        >
-          <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-          />
+      <div className="bg-white shadow-md rounded-lg p-4 sm:p-6">
+        <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-center mb-2">Route Visualization</h2>
+        <div className="h-[250px] sm:h-[350px] md:h-[450px] w-full">
+          <MapContainer
+            center={routeCoordinates.length > 0 ? routeCoordinates[0] : [0, 0]}
+            zoom={6}
+            className="h-full w-full rounded-lg shadow"
+          >
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            />
 
-          <MapBounds />
+            <MapBounds />
 
-          {/* Draw route path */}
-          {routeCoordinates.length > 1 && (
-            <Polyline positions={routeCoordinates} color="blue" weight={5} opacity={0.7} />
-          )}
+            {/* Draw route path */}
+            {routeCoordinates.length > 1 && (
+              <Polyline positions={routeCoordinates} color="blue" weight={5} opacity={0.7} />
+            )}
 
-          {/* Start Location Marker */}
-          {startLocation && (
-            <Marker position={startLocation}>
-              <Popup>Start: {logs[0]?.location || 'Unknown'}</Popup>
-            </Marker>
-          )}
+            {/* Start Location Marker */}
+            {startLocation && (
+              <Marker position={startLocation}>
+                <Popup>Start: {logs[0]?.location || 'Unknown'}</Popup>
+              </Marker>
+            )}
 
-          {/* Pickup Location Marker */}
-          {pickupLocation && (
-            <Marker position={pickupLocation} icon={L.icon({ iconUrl: 'https://maps.google.com/mapfiles/ms/icons/green-dot.png' })}>
-              <Popup>Pickup: {logs[1]?.location || 'Unknown'}</Popup>
-            </Marker>
-          )}
+            {/* Pickup Location Marker */}
+            {pickupLocation && (
+              <Marker position={pickupLocation} icon={L.icon({ iconUrl: 'https://maps.google.com/mapfiles/ms/icons/green-dot.png' })}>
+                <Popup>Pickup: {logs[1]?.location || 'Unknown'}</Popup>
+              </Marker>
+            )}
 
-          {/* Dropoff Location Marker */}
-          {dropoffLocation && (
-            <Marker position={dropoffLocation} icon={L.icon({ iconUrl: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png' })}>
-              <Popup>Dropoff: {logs[logs.length - 1]?.location || 'Unknown'}</Popup>
-            </Marker>
-          )}
-        </MapContainer>
+            {/* Dropoff Location Marker */}
+            {dropoffLocation && (
+              <Marker position={dropoffLocation} icon={L.icon({ iconUrl: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png' })}>
+                <Popup>Dropoff: {logs[logs.length - 1]?.location || 'Unknown'}</Popup>
+              </Marker>
+            )}
+          </MapContainer>
+        </div>
       </div>
     </div>
   );
